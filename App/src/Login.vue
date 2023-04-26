@@ -21,7 +21,7 @@
                             <label for="password" class="block mb-2 text-sm font-medium text-gray-900">Password</label>
                             <input type="password" name="password" v-model="password" id="password" placeholder="••••••••"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 
-                                                                " required>
+                                                                    " required>
                         </div>
                         <div class="flex items-center justify-between">
                             <!--
@@ -70,8 +70,6 @@ export default {
             password: "",
         };
     },
-    mounted() {
-    },
     methods: {
         modeSwitch() {
             this.isLogginIn = !this.isLogginIn;
@@ -84,9 +82,11 @@ export default {
                     //var salt = bcrypt.genSaltSync(10);
                     //var hash = bcrypt.hashSync(this.password, salt);
 
-                    axios.post('/login', {email: this.email, password: this.password})
+                    axios.post('http://localhost:5173/login', { email: this.email, password: this.password })
                         .then(response => {
-                            console.log(response.data); // Output: "true" or "false"
+                            console.log(response.status);
+                            // redirect
+
                         })
                         .catch(error => console.error(error));
                 } else {

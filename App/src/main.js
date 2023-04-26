@@ -1,6 +1,8 @@
 import { createApp } from 'vue'
 import './style.css'
-import App from './App.vue'
-import Login from './Login.vue'
 
-createApp(Login).mount('#app');
+import App from './App.vue'
+import { store } from './store/store';
+
+
+createApp(App).use(store).mount('#app');

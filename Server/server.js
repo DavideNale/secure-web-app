@@ -23,16 +23,19 @@ var accounts = [
 ]
 
 router.post('/register', async (req, res) => {
-  res.json(false)
+  res.status(200);
 });
 
 router.post('/login', (req, res) => {
     const { email, password } = req.body;
     const account = accounts.find(obj => obj.email === email);
     if(account){
-      res.json("true");
+      if ( bcrypt.compare(password, account.hash)){
+        res.status(200).json("session token here");
+        // add token to list of tokens
+      }
     } else {
-      res.json("false");
+      res.status(500);
     }
 });
 

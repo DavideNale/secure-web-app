@@ -1,27 +1,15 @@
-<!-- APP -->
 <template>
-  <div v-if="!isLoggedIn">
-    <Login/>
-    </div>
-    <div v-if="isLoggedIn">
-      <Login/> 
-    </div>
+    <Home/>
 </template>
 
-<!-- SCRIPThttps://sdh-server.crabdance.com/api/patients/ -->
 <script>
 import Login from './Login.vue';
+import Home from './Home.vue';
+
 export default {
-    data() {
-        return {
-            env: "http://localhost:3000/patients/",
-            isLoggedIn: false,
-        };
-    },
-    mounted() {
-    },
-    computed: {},
-    methods: {},
-    components: { Login }
-};
+    components: {
+        Login,
+        Home,
+    }
+}
 </script>
