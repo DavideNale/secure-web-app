@@ -13,7 +13,9 @@
     "bcryptjs": "^2.4.3",
     "vue": "^3.2.36",
     "vue-router": "^4.1.6",
-    "vuex": "^4.0.2"
+    "vuex": "^4.0.2",
+    "vuex-plugin-persistedstate": "^1.0.6",
+    "zxcvbn": "^4.4.2"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.1.0",

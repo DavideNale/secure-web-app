@@ -1,5 +1,6 @@
 <template>
-    <Home/>
+    <Login v-if="!isAuth"/>
+    <Home v-else/>
 </template>
 
 <script>
@@ -10,6 +11,11 @@ export default {
     components: {
         Login,
         Home,
+    },
+    computed: {
+        isAuth() {
+            return this.$store.state.isLoggedIn
+        }
     }
 }
 </script>

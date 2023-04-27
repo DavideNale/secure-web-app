@@ -18,10 +18,12 @@
                                 placeholder="name@company.com" required>
                         </div>
                         <div>
-                            <label for="password" class="block mb-2 text-sm font-medium text-gray-900">Password</label>
+                            <label for="password" class="block mb-2 text-sm font-medium text-gray-900">Password
+                                <span v-if="strength > 0">( {{ getStrengthLabel(strength) }} )</span>
+                            </label>
                             <input type="password" name="password" v-model="password" id="password" placeholder="••••••••"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 
-                                                                    " required>
+                                @input="checkPasswordStrength" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 
+                                                                                                " required>
                         </div>
                         <div class="flex items-center justify-between">
                             <!--
@@ -61,6 +63,8 @@
 <script>
 import bcrypt from 'bcryptjs';
 import axios from 'axios';
+import { mapState } from 'vuex'
+import zxcvbn from 'zxcvbn'
 
 export default {
     data() {
@@ -68,29 +72,63 @@ export default {
             isLogginIn: true,
             email: "",
             password: "",
+            strength: 0,
         };
     },
     methods: {
+        checkPasswordStrength() {
+            if (this.password === '') {
+                this.strength = 0;
+                return;
+            }
+
+            const result = zxcvbn(this.password);
+            this.strength = result.score;
+        },
+
+        getStrengthLabel(strength) {
+            switch (strength) {
+                case 0:
+                    return 'Too weak';
+                case 1:
+                    return 'Weak';
+                case 2:
+                    return 'Fair';
+                case 3:
+                    return 'Strong';
+                case 4:
+                    return 'Very strong';
+                default:
+                    return '';
+            }
+        },
         modeSwitch() {
             this.isLogginIn = !this.isLogginIn;
         },
         submitLogin() {
             if (this.email !== '' && this.password !== '') {
                 if (this.isLogginIn) {
-                    // log in
-                    // Load hash from your password DB.
-                    //var salt = bcrypt.genSaltSync(10);
-                    //var hash = bcrypt.hashSync(this.password, salt);
-
-                    axios.post('http://localhost:5173/login', { email: this.email, password: this.password })
-                        .then(response => {
-                            console.log(response.status);
-                            // redirect
-
-                        })
-                        .catch(error => console.error(error));
+                    // login
+                    axios.post('http://localhost:3000/login', { email: this.email, password: this.password })
+                            .then(response => {
+                                if (response.status == 200) {
+                                    this.$store.commit('logIn', true)
+                                }
+                            })
+                            .catch(error => console.error(error));
                 } else {
-                    // register
+                    if (this.strength > 0) {
+                        // 
+                        var salt = bcrypt.genSaltSync(10);
+                        var hash = bcrypt.hashSync(this.password, salt);
+                        axios.post('http://localhost:3000/register', { email: this.email, hash: hash })
+                            .then(response => {
+                                if (response.status == 200) {
+                                    this.$store.commit('logIn', true)
+                                }
+                            })
+                            .catch(error => console.error(error));
+                    }
                 }
             }
         },

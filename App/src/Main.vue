@@ -1,7 +1,6 @@
 <!-- APP -->
 <template>
-
-  <div id="app">
+  <div id="app" class="">
     <!-- FORM -->
     <div class="mx-10 my-10 shadow-md border rounded-md">
       <form ref="myForm" @submit.prevent="submitForm">
