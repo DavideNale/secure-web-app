@@ -10,7 +10,7 @@ app.use(express.json());
 app.use('/', router);
 
 // start the server at port 3000
-const PORT = process.env.PORT || 5173;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log('Server listening on port ' + PORT);
 });
@@ -22,21 +22,33 @@ var accounts = [
   },
 ]
 
+var loginTokens = [
+
+]
+
+
 router.post('/register', async (req, res) => {
-  res.status(200);
+  const { email, hash } = req.body;
+  const account = accounts.find(obj => obj.email === email);
+  if (!account) {
+    accounts.push({ email, hash });
+    console.log(accounts);
+    res.status(200).json("yes");
+  } else {
+    res.status(500);
+  }
 });
 
 router.post('/login', (req, res) => {
-    const { email, password } = req.body;
-    const account = accounts.find(obj => obj.email === email);
-    if(account){
-      if ( bcrypt.compare(password, account.hash)){
-        res.status(200).json("session token here");
-        // add token to list of tokens
-      }
-    } else {
-      res.status(500);
+  const { email, password } = req.body;
+  const account = accounts.find(obj => obj.email === email);
+  if (account) {
+    if (bcrypt.compare(password, account.hash)) {
+      res.status(200).json("session token here");
     }
+  } else {
+    res.status(500);
+  }
 });
 
 // data
@@ -66,7 +78,6 @@ router.post('/patients', (req, res) => {
   var newPatient = req.body;
   patients.push(newPatient);
   res.send(patients);
-
 });
 
 // delete by id

@@ -5,7 +5,7 @@
             <div class="flex flex-col-reverse md:flex-row h-full">
                 <div class="flex-grow bg-gray-100 w-full p-6">
                     <!-- TABLE -->
-                    <div class="relative overflow-x-auto rounded-lg shadow">
+                    <div class="relative overflow-x-auto rounded-lg shadow border">
                 <table class="w-full text-sm text-left text-gray-500">
                     <thead class="text-xs text-gray-700 uppercase bg-gray-50">
                         <tr>
@@ -77,10 +77,16 @@
                     <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
                         <form class="space-y-4 md:space-y-6" action="#">
                             <div>
-                                <label for="name" class="block mb-2 text-sm font-medium text-gray-900 ">Full Name</label>
-                                <input type="text" name="" id="name"
+                                <label for="fname" class="block mb-2 text-sm font-medium text-gray-900 ">First Name</label>
+                                <input type="text" name="" id="fname"
                                     class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 "
-                                    placeholder="name@company.com" required>
+                                    placeholder="Name" required>
+                            </div>
+                            <div>
+                                <label for="sname" class="block mb-2 text-sm font-medium text-gray-900 ">Second Name</label>
+                                <input type="text" name="" id="sname"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 "
+                                    placeholder="Surname" required>
                             </div>
                             <div>
                                 <label for="email" class="block mb-2 text-sm font-medium text-gray-900 ">Email</label>
@@ -91,14 +97,6 @@
                             <div>
                                 <label for="password" class="block mb-2 text-sm font-medium text-gray-900 ">Password</label>
                                 <input type="password" name="password" id="password" placeholder="••••••••"
-                                    class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 "
-                                    required>
-                            </div>
-                            <div>
-                                <label for="confirm-password" class="block mb-2 text-sm font-medium text-gray-900">Confirm
-                                    password</label>
-                                <input type="confirm-password" name="confirm-password" id="confirm-password"
-                                    placeholder="••••••••"
                                     class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 "
                                     required>
                             </div>
