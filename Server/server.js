@@ -2,6 +2,9 @@ const bcrypt = require('bcryptjs');
 const express = require('express');
 const cors = require('cors');
 const router = express.Router();
+import PocketBase from 'pocketbase';
+
+const pb = new PocketBase('http://127.0.0.1:8090');
 
 // server setup
 const app = express();
