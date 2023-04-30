@@ -19,26 +19,13 @@
                         </div>
                         <div>
                             <label for="password" class="block mb-2 text-sm font-medium text-gray-900">Password
-                                <span v-if="strength > 0">( {{ getStrengthLabel(strength) }} )</span>
+                                <span v-if="strength > 0 && !isLogginIn">( {{ getStrengthLabel(strength) }} )</span>
                             </label>
                             <input type="password" name="password" v-model="password" id="password" placeholder="••••••••"
                                 @input="checkPasswordStrength" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 
                                                                                                 " required>
                         </div>
                         <div class="flex items-center justify-between">
-                            <!--
-                            <div class="flex items-start">
-                                <div class="flex items-center h-5">
-                                    <input id="remember" aria-describedby="remember" type="checkbox"
-                                        class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 "
-                                        required>
-                                </div>
-                                <div class="ml-3 text-sm">
-                                    <label for="remember" class="text-gray-500 ">Remember me</label>
-                                </div>
-                            </div>
-                            <a href="#" class="text-sm font-medium text-blue-600 hover:underline">Forgot
-                                password?</a>-->
                         </div>
                         <button type="submit" v-if="isLogginIn"
                             class="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Sign
@@ -109,21 +96,20 @@ export default {
             if (this.email !== '' && this.password !== '') {
                 if (this.isLogginIn) {
                     // login
-                    axios.post('http://localhost:3000/login', { email: this.email, password: this.password })
-                            .then(response => {
-                                if (response.status == 200) {
-                                    this.$store.commit('logIn', true)
-                                }
-                            })
-                            .catch(error => console.error(error));
+                    axios.post('https://sdh-server.crabdance.com/api/login', { email: this.email, password: this.password })
+                        .then(response => {
+                            if (response.status == 200) {
+                                this.$store.commit('logIn', true)
+                            }
+                        })
+                        .catch(error => console.error(error));
                 } else {
-                    if (this.strength > 0) {
-                        // 
+                    if (this.strength > 0) { 
                         var salt = bcrypt.genSaltSync(10);
                         var hash = bcrypt.hashSync(this.password, salt);
-                        axios.post('http://localhost:3000/register', { email: this.email, hash: hash })
+                        axios.post('https://sdh-server.crabdance.com/api/register', { email: this.email, hash: hash })
                             .then(response => {
-                                if (response.status == 200) {
+                                if (response.status == 201) {
                                     this.$store.commit('logIn', true)
                                 }
                             })

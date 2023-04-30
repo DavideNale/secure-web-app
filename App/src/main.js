@@ -7,6 +7,7 @@ import createPersistedState from "vuex-plugin-persistedstate";
 const store = createStore({
   state: {
     isLoggedIn: false,
+    JWT : "",
   },
   mutations: {
     logIn(state, value){
