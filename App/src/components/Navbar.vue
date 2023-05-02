@@ -15,7 +15,7 @@ export default {
     name: 'Navbar',
     methods: {
         logout() {
-            this.$store.commit('logIn', false)
+            this.$store.commit('logIn', { value: false, token: '' });
         }
     }
 }

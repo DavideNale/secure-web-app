@@ -6,12 +6,15 @@ import createPersistedState from "vuex-plugin-persistedstate";
 
 const store = createStore({
   state: {
+    env: 'https://sdh-server.crabdance.com/api/',
     isLoggedIn: false,
-    JWT : "",
+    JWT : '',
+    patientsData: null,
   },
   mutations: {
-    logIn(state, value){
-        state.isLoggedIn = value;
+    logIn(state, payload){
+        state.isLoggedIn = payload.value;
+        state.JWT = payload.token;
     },
   },
   actions: {},

@@ -96,21 +96,28 @@ export default {
             if (this.email !== '' && this.password !== '') {
                 if (this.isLogginIn) {
                     // login
-                    axios.post('https://sdh-server.crabdance.com/api/login', { email: this.email, password: this.password })
+                    axios.post('https://sdh-server.crabdance.com/api/login', { email: this.email, password: this.password }, {
+                        headers: {
+                            'Authorization': this.$store.state.JWT
+                        }
+                    })
                         .then(response => {
                             if (response.status == 200) {
-                                this.$store.commit('logIn', true)
+                                console.log("server" + response.data);
+                                this.$store.commit('logIn', { value: true, token: response.data });
+                                console.log("local" + this.$store.state.JWT);
                             }
                         })
                         .catch(error => console.error(error));
                 } else {
-                    if (this.strength > 0) { 
+                    if (this.strength > 0) {
                         var salt = bcrypt.genSaltSync(10);
                         var hash = bcrypt.hashSync(this.password, salt);
                         axios.post('https://sdh-server.crabdance.com/api/register', { email: this.email, hash: hash })
                             .then(response => {
                                 if (response.status == 201) {
-                                    this.$store.commit('logIn', true)
+                                    this.isLogginIn = true;
+                                    // TODO ALERTS
                                 }
                             })
                             .catch(error => console.error(error));
