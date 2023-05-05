@@ -5,10 +5,10 @@
             <div class="flex flex-col-reverse md:flex-row h-full">
                 <!-- main content -->
                 <div class="flex-grow bg-gray-100 w-full p-6">
-                    <!-- search bar -->
-                    <SearchBar />
+                    <!-- search bar
+                    <SearchBar />-->
                     <!-- table -->
-                    <PatientsTable />
+                    <PatientsTable/>
 
                 </div>
                 <!-- side bar -->

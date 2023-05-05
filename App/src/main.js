@@ -9,18 +9,25 @@ const store = createStore({
     env: 'https://sdh-server.crabdance.com/api/',
     isLoggedIn: false,
     JWT : '',
-    patientsData: null,
+    patientsData: {},
+    pat: null,
   },
   mutations: {
+    setPat(state, pat) {
+      state.pat = pat
+    },
     logIn(state, payload){
         state.isLoggedIn = payload.value;
         state.JWT = payload.token;
     },
+    setPatientsData(state, data) {
+      state.patientsData = data;
+    }
   },
   actions: {},
   getters: {
-    getTodos(state) {
-      return state.todos;
+    getPatientsData: state => {
+      return state.patientsData;
     }
   },
   plugins: [createPersistedState()],

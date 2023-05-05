@@ -270,7 +270,7 @@ export default {
 
     // delete
     deleteP(patient) {
-      var id = patient.id;
+     var id = patient.id;
       axios
         .delete(this.env + id)
         .then((response) => {

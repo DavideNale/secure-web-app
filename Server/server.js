@@ -108,8 +108,9 @@ router.post('/login', authMiddleware,  async (req, res) => {
 //----------------------
 
 // get all patients
-app.get('/patients', authMiddleware, (req, res) => {
-    res.json(patients);
+app.get('/patients', authMiddleware, async (req, res) => {
+    const records = await pb.collection('patients').getFullList({ sort: '-created',});
+    res.json(records);
 });
 
 // get patient by index
@@ -119,34 +120,51 @@ router.get('/patients/:id', authMiddleware, (req, res) => {
 });
 
 // add new patient
-router.post('/patients', authMiddleware, (req, res) => {
-    var newPatient = req.body;
-    patients.push(newPatient);
-    res.send(patients);
-
+router.post('/patients', authMiddleware, async (req, res) => {
+    data = {
+        first_name : req.body.firstname,
+        last_name : req.body.lastname,
+        email : req.body.email.toLowerCase(),
+    }
+    try {
+        const pats = await pb.collection('patients').getList(1, 50,{filter: `email="${data.email}"`,});
+        if(pats.totalItems<1){
+            const record = await pb.collection('patients').create(data);
+            patients = await pb.collection('patients').getFullList({sort:'-created'})
+            return res.status(201).json(patients)
+        } else {
+            return res.status(500).json("Error : patient with this email already present")
+        }
+    } catch (error) {
+       return res.status(500).json('Error : unable to register patient')
+    }
 });
 
 // delete by id
-router.delete('/patients/:id', authMiddleware, (req, res) => {
+router.delete('/patients/:id', authMiddleware, async (req, res) => {
     var id = req.params.id;
-    //console.log(id);
-    patients = patients.filter(function(patient) {
-        return patient.id !== id;
-    });
+    try{ 
+        await pb.collection('patients').delete(id);
+    } catch(e){
+        console.log(e)
+    }
+    patients = await pb.collection('patients').getFullList({sort: '-created'});
     res.send(patients);
 });
 
 // update by id
-router.put('/patients/:id', authMiddleware, (req, res) => {
-    const id = req.params.id;
-    const patient = req.body;
-    const index = patients.findIndex(p => p.id === id);
-
-    if (index !== -1) {
-        // Replace the patient object at the found index with the updated patient data
-        patients[index] = patient;
-        res.send(patients);
-    } else {
-        res.status(404).send(`Patient with ID ${id} not found.`);
+router.put('/patients/:id', authMiddleware, async (req, res) => {
+    data = {
+        id : req.body.id,
+        first_name : req.body.firstname,
+        last_name : req.body.lastname,
+        email : req.body.email.toLowerCase(),
+    }
+    try {
+        await pb.collection('patients').update(data.id, data);
+            patients = await pb.collection('patients').getFullList({sort:'-created'})
+            return res.status(201).json(patients)
+    } catch (e){
+        return res.status(404).json("unable to update patient");
     }
 });
