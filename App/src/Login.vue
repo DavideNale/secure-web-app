@@ -48,10 +48,20 @@
 </template>
 
 <script>
-import bcrypt from 'bcryptjs';
+//import bcrypt from 'bcryptjs';
 import axios from 'axios';
 import { mapState } from 'vuex'
 import zxcvbn from 'zxcvbn'
+
+// Define the fallback function
+function randomFallback(size) {
+  const randomBytes = new Uint8Array(size);
+  window.crypto.getRandomValues(randomBytes);
+  return randomBytes;
+}
+
+// Set the fallback function in bcrypt
+//bcrypt.setRandomFallback(randomFallback);
 
 export default {
     data() {

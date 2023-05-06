@@ -47,7 +47,7 @@
                     <div class="w-full flex space-x-4">
                         <button v-if="this.isEditing" @click="cancelEdit"
                             class="w-full text-white bg-gray-600 hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Cancel</button>
-                        <button @click="submit"
+                        <button @click="submitP"
                             class="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">{{
                                 isEditing ? 'Save' : 'Add Patient' }}</button>
 
@@ -123,7 +123,7 @@ export default {
             this.patient.email = pat.email;
             this.isEditing = true;
         },
-        submit() {
+        submitP() {
             if(this.isEditing){
                 this.updateContent();
                 return;
