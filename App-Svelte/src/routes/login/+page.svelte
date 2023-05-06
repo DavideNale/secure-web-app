@@ -1,29 +1,25 @@
 <script lang="ts">
-	import { goto } from "$app/navigation";
+	import { goto } from '$app/navigation';
 	import axios from 'axios';
+	import { sessionValid, sessionToken } from '../../store';
 
-	let email : string; 
-	let password : string;
+	let email: string;
+	let password: string;
+	
 
 	function login() {
 		console.log('Button clicked');
-		goto('/');
-
-                    // login
-                    axios.post('https://sdh-server.crabdance.com/api/login',{ email, password}, {
-                        headers: {
-                            'Authorization': this.$store.state.JWT
-                        }
-                    })
-                        .then(response => {
-                            if (response.status == 200) {
-                                console.log("server" + response.data);
-                                this.$store.commit('logIn', { value: true, token: response.data });
-                                console.log("local" + this.$store.state.JWT);
-                            }
-                        })
-                        .catch(error => console.error(error));
-
+		axios
+			.post('https://sdh-server.crabdance.com/api/login', { email, password })
+			.then((response) => {
+				if (response.status == 200) {
+					sessionToken.set(response.data);
+					sessionValid.set(true)
+					console.log('server ' + response.data);
+					goto('/');
+				}
+			})
+			.catch((error) => console.error(error));
 	}
 </script>
 
