@@ -3,8 +3,15 @@
 	import axios from 'axios';
 	import { sessionValid, sessionToken } from '../store';
 	import { onMount } from 'svelte';
+	import { get } from 'svelte/store';
 
 	let token: string;
+
+	let isEditing: boolean = false;
+	let id = '';
+	let firstname = '';
+	let lastname = '';
+	let email = '';
 
 	sessionToken.subscribe((v) => {
 		token = v;
@@ -12,7 +19,7 @@
 
 	let patients: any = [];
 	let filteredPatients = patients;
-	let searchQuery: string = "";
+	let searchQuery: string = '';
 
 	function logout() {
 		sessionValid.set(false);
@@ -46,16 +53,94 @@
 				console.error(error);
 			});
 	}
+
+	function deleteP(id: string) {
+		axios
+			.delete('https://sdh-server.crabdance.com/api/patients/' + id, {
+				headers: {
+					Authorization: get(sessionToken)
+				}
+			})
+			.then((response) => {
+				patients = response.data;
+			})
+			.catch((e) => {
+				console.log(e);
+			});
+	}
+
+	function cancelEdit() {
+		isEditing = false;
+		id = '';
+		firstname = '';
+		lastname = '';
+		email = '';
+	}
+
+	function editP(patient: { id: string, first_name: string; last_name: string; email: string }) {
+		isEditing = true;
+		id = patient.id;
+		firstname = patient.first_name;
+		lastname = patient.last_name;
+		email = patient.email;
+	}
+
+	function addP() {
+		var patient = {
+			firstname,
+			lastname,
+			email
+		};
+		axios
+			.post('https://sdh-server.crabdance.com/api/patients', patient, {
+				headers: {
+					Authorization: get(sessionToken)
+				}
+			})
+			.then((response) => {
+				if (response.status == 201) {
+					patients = response.data;
+					lastname = '';
+					firstname = '';
+					email = '';
+				} else {
+					//
+				}
+			})
+			.catch((error) => {});
+	}
+	function submitP() {
+		var patient = {
+			id,
+			firstname,
+			lastname,
+			email
+		};
+		axios
+			.put('https://sdh-server.crabdance.com/api/patients/' + patient.id, patient, {
+				headers: {
+					Authorization: get(sessionToken)
+				}
+			})
+			.then((response) => {
+				patients = response.data;
+				isEditing = false;
+			})
+			.catch((error) => {
+				console.error(error);
+			});
+		isEditing = false;
+	}
 </script>
 
-<div class="flex flex-col h-screen overflow-y-hidden">
+<div class="flex flex-col h-screen">
 	<!-- navabar -->
 	<nav class="bg-white border-b">
 		<!-- logo and links -->
 		<div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
 			<img src="svelte.svg" alt="" class="h-8" />
 			<!-- search bar -->
-			<div class="relative md:w-96 md:mx-auto mb-6">
+			<div class="relative md:w-96 md:mx-auto">
 				<div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
 					<svg
 						aria-hidden="true"
@@ -79,17 +164,16 @@
 					required
 				/>
 			</div>
-			<p class="overflow-y-hidden w-12">{token} {sessionValid}</p>
 			<button class="font-bold text-blue-600 hover:underline" on:click={logout}>Logout</button>
 		</div>
 	</nav>
 
 	<!--under navbar -->
-	<div class="flex flex-row flex-1 bg-gray-100">
-		<div class="flex-grow mx-auto bg-red-100">
+	<div class="flex flex-row flex-1 bg-gray-100 overflow-y-hidden">
+		<div class="flex-grow m-4 mr-2 overflow-y-scroll border rounded-md">
 			<!-- Your main content here -->
 			<table class="w-full text-sm text-left text-gray-500">
-				<thead class="text-xs text-gray-700 uppercase sticky top-0 bg-gray-50">
+				<thead class="text-xs text-gray-700 uppercase bg-gray-50">
 					<tr>
 						<th scope="col" class="px-6 py-3"> First Name </th>
 						<th scope="col" class="px-6 py-3"> Last Name </th>
@@ -112,6 +196,7 @@
 							</td>
 							<td class=" py-4">
 								<button
+									on:click={() => editP(patient)}
 									type="button"
 									class="text-blue-700 bg-blue-50 hover:bg-blue-600 hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm p-2 text-center inline-flex items-center mr-2"
 								>
@@ -129,9 +214,10 @@
 										/>
 									</svg>
 
-									<span class="sr-only">Icon description</span>
+									<span class="sr-only">Edit</span>
 								</button>
 								<button
+									on:click={() => deleteP(patient.id)}
 									type="button"
 									class="text-red-700 bg-red-50 hover:bg-red-600 hover:text-white focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm p-2 text-center inline-flex items-center mr-2"
 								>
@@ -145,7 +231,7 @@
 										<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
 									</svg>
 
-									<span class="sr-only">Icon description</span>
+									<span class="sr-only">Delete</span>
 								</button>
 							</td>
 						</tr>
@@ -154,15 +240,16 @@
 			</table>
 		</div>
 
-		<nav class="text-white flex-none w-2/6 h-full right-0">
+		<nav class="text-white flex-none h-full right-0 w-96">
 			<!-- Your sidebar content here -->
-			<div class="p-6 space-y-4 md:space-y-6 sm:p-8 max-w-sm bg-white rounded-md border mt-10">
+			<div class="p-6 space-y-4 md:space-y-6 sm:p-8 max-w-sm bg-white rounded-md border m-4 ml-2">
 				<form class="space-y-4 md:space-y-6">
 					<div>
 						<label for="fname" class="block mb-2 text-sm font-medium text-gray-900"
 							>First Name</label
 						>
 						<input
+							bind:value={firstname}
 							type="text"
 							name=""
 							id="fname"
@@ -176,6 +263,7 @@
 							>Second Name</label
 						>
 						<input
+							bind:value={lastname}
 							type="text"
 							name=""
 							id="sname"
@@ -187,6 +275,7 @@
 					<div>
 						<label for="email" class="block mb-2 text-sm font-medium text-gray-900">Email</label>
 						<input
+							bind:value={email}
 							type="email"
 							name="email"
 							id="email"
@@ -207,15 +296,31 @@
 						</div>
 						<div class="ml-3 text-sm">
 							<label for="terms" class="font-light text-gray-500"
-								>I <a class="font-medium text-blue-600 hover:underline" href="#">Reviewed</a>
+								>I <span class="font-medium text-blue-600 hover:underline">Reviewed</span>
 								the data</label
 							>
 						</div>
 					</div>
-					<button
-						class="w-full text-white bg-blue-600 hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-300 font-bold rounded-lg text-sm px-5 py-2.5 text-center"
-						>Add Patient</button
-					>
+					<div class="flex space-x-4">
+						{#if isEditing}
+							<button
+								on:click={cancelEdit}
+								class="w-full text-white bg-gray-600 hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-300 font-bold rounded-lg text-sm px-5 py-2.5 text-center"
+								>Cancel</button
+							>
+							<button
+								on:click={submitP}
+								class="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-bold rounded-lg text-sm px-5 py-2.5 text-center"
+								>Save</button
+							>
+						{:else}
+							<button
+								on:click={addP}
+								class="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-bold rounded-lg text-sm px-5 py-2.5 text-center"
+								>Add Patient</button
+							>
+						{/if}
+					</div>
 				</form>
 			</div>
 		</nav>

@@ -8,14 +8,12 @@
 	
 
 	function login() {
-		console.log('Button clicked');
 		axios
 			.post('https://sdh-server.crabdance.com/api/login', { email, password })
 			.then((response) => {
 				if (response.status == 200) {
 					sessionToken.set(response.data);
 					sessionValid.set(true)
-					console.log('server ' + response.data);
 					goto('/');
 				}
 			})
