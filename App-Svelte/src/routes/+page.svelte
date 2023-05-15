@@ -173,7 +173,7 @@
 		<div class="flex-grow m-4 mr-2 overflow-y-scroll border rounded-md">
 			<!-- Your main content here -->
 			<table class="w-full text-sm text-left text-gray-500">
-				<thead class="text-xs text-gray-700 uppercase bg-gray-50">
+				<thead class="text-xs sticky text-gray-700 uppercase bg-gray-50">
 					<tr>
 						<th scope="col" class="px-6 py-3"> First Name </th>
 						<th scope="col" class="px-6 py-3"> Last Name </th>
