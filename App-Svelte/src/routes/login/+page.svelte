@@ -2,10 +2,10 @@
 	import { goto } from '$app/navigation';
 	import axios from 'axios';
 	import { sessionValid, sessionToken } from '../../store';
+	import toast, {Toaster} from 'svelte-french-toast'
 
 	let email: string;
 	let password: string;
-	
 
 	function login() {
 		axios
@@ -13,7 +13,7 @@
 			.then((response) => {
 				if (response.status == 200) {
 					sessionToken.set(response.data);
-					sessionValid.set(true)
+					sessionValid.set(true);
 					goto('/');
 				}
 			})
