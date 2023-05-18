@@ -2,7 +2,7 @@
 	import { goto } from '$app/navigation';
 	import axios from 'axios';
 	import { sessionValid, sessionToken } from '../../store';
-	import toast, {Toaster} from 'svelte-french-toast'
+	import toast, { Toaster } from 'svelte-french-toast';
 
 	let email: string;
 	let password: string;
@@ -11,16 +11,37 @@
 		axios
 			.post('https://sdh-server.crabdance.com/api/login', { email, password })
 			.then((response) => {
-				if (response.status == 200) {
-					sessionToken.set(response.data);
-					sessionValid.set(true);
-					goto('/');
+				switch (response.status) {
+					case 200:
+						//sessionToken.set(response.data.token);
+						//sessionValid.set(true);
+						if(response.data.role == 'doctor'){
+							goto('/');
+						}else if(response.data.role == 'patient'){
+							goto('/personal');
+						}
+						break;
+					case 204:
+						toast.error('Incorrect Credentials');
+						break;
+					default:
+						break;
 				}
 			})
-			.catch((error) => console.error(error));
+			.catch((error) => {
+				switch(error.response.status){
+					case 404:
+						toast.error('No account associated with this email')
+						break;
+					default:
+						toast.error('Internal Server Error')
+						break;
+				}
+			});
 	}
 </script>
 
+<Toaster />
 <section class="bg-gray-50">
 	<div class="flex flex-col items-center justify-center mx-auto h-screen lg:py-0">
 		<div class="w-full bg-white shadow-sm rounded-lg border md:mt-0 sm:max-w-md xl:p-0">

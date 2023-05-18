@@ -3,6 +3,7 @@
 	import axios from 'axios';
 	import bcrypt from 'bcryptjs';
 	import zxcvbn from 'zxcvbn';
+	import toast, { Toaster } from 'svelte-french-toast';
 
 	let strength = 0;
 	let strengthLevel = '';
@@ -11,21 +12,29 @@
 	let last_name = '';
 	let email = '';
 	let password = '';
-	let confirmed = false;
 
 	function register() {
 		if (strength > 0) {
 			var salt = bcrypt.genSaltSync(10);
-			console.log(salt);
 			var hash = bcrypt.hashSync(password, salt);
+			var data = {
+				first_name,
+				last_name,
+				email,
+				hash
+			}
 			axios
-				.post('https://sdh-server.crabdance.com/api/register', { email, hash })
+				.post('https://sdh-server.crabdance.com/api/register', data)
 				.then((response) => {
 					if (response.status == 201) {
-						goto('/login');
+						toast.success('Successfully registered');
+						setTimeout(() => goto('/login'), 1000);
 					}
 				})
-				.catch((error) => console.error(error));
+				.catch((error) => {
+					console.error(error);
+					toast.error('Something went wrong')
+				});
 		}
 	}
 
@@ -57,7 +66,7 @@
 		}
 	}
 </script>
-
+<Toaster/>
 <section class="bg-gray-50">
 	<div class="flex flex-col items-center justify-center mx-auto md:h-screen lg:py-0">
 		<div class="w-full bg-white shadow-sm rounded-lg border md:mt-0 sm:max-w-md xl:p-0">
@@ -127,7 +136,6 @@
 					<div>
 						<label for="confirm-terms" class="flex items-center">
 							<input
-								bind:value={confirmed}
 								type="checkbox"
 								name="confirm-terms"
 								id="confirm-terms"
