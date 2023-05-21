@@ -22,7 +22,7 @@
 				last_name,
 				email,
 				hash
-			}
+			};
 			axios
 				.post('https://sdh-server.crabdance.com/api/register', data)
 				.then((response) => {
@@ -33,7 +33,7 @@
 				})
 				.catch((error) => {
 					console.error(error);
-					toast.error('Something went wrong')
+					toast.error('Something went wrong');
 				});
 		}
 	}
@@ -66,7 +66,8 @@
 		}
 	}
 </script>
-<Toaster/>
+
+<Toaster />
 <section class="bg-gray-50">
 	<div class="flex flex-col items-center justify-center mx-auto md:h-screen lg:py-0">
 		<div class="w-full bg-white shadow-sm rounded-lg border md:mt-0 sm:max-w-md xl:p-0">

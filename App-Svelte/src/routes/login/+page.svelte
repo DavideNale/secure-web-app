@@ -13,8 +13,8 @@
 			.then((response) => {
 				switch (response.status) {
 					case 200:
-						//sessionToken.set(response.data.token);
-						//sessionValid.set(true);
+						sessionToken.set(response.data.token);
+						sessionValid.set(true);
 						if(response.data.role == 'doctor'){
 							goto('/');
 						}else if(response.data.role == 'patient'){
