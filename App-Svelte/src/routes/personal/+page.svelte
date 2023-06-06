@@ -1,12 +1,13 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import axios from 'axios';
-	import { sessionValid, sessionToken } from '../../store';
+	import { sessionValid, sessionToken, sessionRole } from '../../store';
 	import { get } from 'svelte/store';
 	import { onMount } from 'svelte';
 	import toast, { Toaster } from 'svelte-french-toast';
 	import { Icon, Pencil, PresentationChartLine } from 'svelte-hero-icons';
 	import { load } from '../+page';
+	import Cookies from 'js-cookie';
 
 	let selectedImage: string = '';
 
@@ -45,8 +46,10 @@
 	}
 
 	function logout() {
+		Cookies.remove('auth');
 		sessionValid.set(false);
 		sessionToken.set('');
+		sessionRole.set('');
 		goto('/login');
 	}
 
@@ -157,7 +160,7 @@
 		<p class="mx-auto font-light italic">Your recipies will appear here</p>
 
 		<p>
-			{token}
+			<!--{token}-->
 		</p>
 	</div>
 </div>

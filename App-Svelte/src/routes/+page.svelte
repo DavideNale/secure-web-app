@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import axios from 'axios';
-	import { sessionValid, sessionToken } from '../store';
+	import { sessionValid, sessionToken, sessionRole } from '../store';
 	import { onMount } from 'svelte';
 	import { get } from 'svelte/store';
+	import Cookies from 'js-cookie';
 
 	let token: string;
 
@@ -22,8 +23,10 @@
 	let searchQuery: string = '';
 
 	function logout() {
+		Cookies.remove('auth');
 		sessionValid.set(false);
 		sessionToken.set('');
+		sessionRole.set('');
 		goto('/login');
 	}
 

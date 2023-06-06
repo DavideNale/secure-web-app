@@ -3,6 +3,7 @@
 	import axios from 'axios';
 	import { sessionValid, sessionToken } from '../../store';
 	import toast, { Toaster } from 'svelte-french-toast';
+	import Cookies from 'js-cookie';
 
 	let email: string;
 	let password: string;
@@ -13,6 +14,7 @@
 			.then((response) => {
 				switch (response.status) {
 					case 200:
+						Cookies.set('auth', JSON.stringify(response.data), {expires: 1/24, secure: true, sameSite: 'strict',} );
 						sessionToken.set(response.data.token);
 						sessionValid.set(true);
 						if(response.data.role == 'doctor'){
