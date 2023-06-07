@@ -4,6 +4,7 @@
 	import bcrypt from 'bcryptjs';
 	import zxcvbn from 'zxcvbn';
 	import toast, { Toaster } from 'svelte-french-toast';
+	import qrcode from 'qrcode';
 
 	let strength = 0;
 	let strengthLevel = '';
@@ -148,6 +149,7 @@
 							>
 						</label>
 					</div>
+					<p>d</p>
 					<div class="flex items-center justify-between" />
 					<button
 						type="submit"

@@ -14,7 +14,7 @@
 	beforeUpdate(()=>{
 		shouldLoad = false;
 		//console.log($page.url.pathname)
-		if($page.url.pathname === '/login'){
+		if($page.url.pathname === '/login' || $page.url.pathname === '/register'){
 			shouldLoad = true
 			return
 		}

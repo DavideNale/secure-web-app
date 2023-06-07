@@ -15,8 +15,12 @@
 		"@sveltejs/adapter-auto": "^2.0.0",
 		"@sveltejs/adapter-static": "^2.0.2",
 		"@sveltejs/kit": "^1.5.0",
+		"@types/authenticator": "^1.1.1",
 		"@types/bcryptjs": "^2.4.2",
 		"@types/js-cookie": "^3.0.3",
+		"@types/notp": "^2.0.2",
+		"@types/qrcode": "^1.5.0",
+		"@types/speakeasy": "^2.0.7",
 		"@types/zxcvbn": "^4.4.1",
 		"@typescript-eslint/eslint-plugin": "^5.45.0",
 		"@typescript-eslint/parser": "^5.45.0",
@@ -40,8 +44,10 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"authenticator": "^1.1.5",
 		"axios": "^1.4.0",
 		"bcryptjs": "^2.4.3",
+		"qrcode": "^1.5.3",
 		"svelte-french-toast": "^1.0.4-beta.0",
 		"svelte-hero-icons": "^5.0.0",
 		"zxcvbn": "^4.4.2"
