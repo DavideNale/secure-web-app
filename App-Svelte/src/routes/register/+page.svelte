@@ -4,7 +4,7 @@
 	import bcrypt from 'bcryptjs';
 	import zxcvbn from 'zxcvbn';
 	import toast, { Toaster } from 'svelte-french-toast';
-	import qrcode from 'qrcode';
+	import QRCode from 'qrcode';
 
 	let strength = 0;
 	let strengthLevel = '';
@@ -13,6 +13,10 @@
 	let last_name = '';
 	let email = '';
 	let password = '';
+
+	let qr = '';
+
+	let showQR = false;
 
 	function register() {
 		if (strength > 0) {
@@ -29,7 +33,9 @@
 				.then((response) => {
 					if (response.status == 201) {
 						toast.success('Successfully registered');
-						setTimeout(() => goto('/login'), 1000);
+						qr = response.data;
+						console.log(qr)
+						showQR = true;
 					}
 				})
 				.catch((error) => {
@@ -37,6 +43,12 @@
 					toast.error('Something went wrong');
 				});
 		}
+	}
+
+	function goToLogin(){
+		qr = '';
+		showQR = false;
+		goto('/login');
 	}
 
 	function checkPasswordStrength() {
@@ -70,9 +82,11 @@
 
 <Toaster />
 <section class="bg-gray-50">
+	{showQR}
 	<div class="flex flex-col items-center justify-center mx-auto md:h-screen lg:py-0">
 		<div class="w-full bg-white shadow-sm rounded-lg border md:mt-0 sm:max-w-md xl:p-0">
 			<div class="p-6 space-y-4 md:space-y-6 sm:p-8">
+				{#if !showQR}
 				<h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl">
 					Register your new account
 				</h1>
@@ -149,7 +163,7 @@
 							>
 						</label>
 					</div>
-					<p>d</p>
+					
 					<div class="flex items-center justify-between" />
 					<button
 						type="submit"
@@ -163,6 +177,19 @@
 						>
 					</p>
 				</form>
+				{:else}
+				<h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl">
+					Here's your 2FA code
+				</h1>
+				<p>It will only be shown once, be sure to save it.</p>
+					<img class="mx-auto h-38 pointer-events-none user-select-none" src={qr} alt="">
+					<div class="flex items-center justify-between" />
+					<button
+					on:click={goToLogin}
+						class="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-bold rounded-lg px-5 py-2.5 text-center"
+						>Go back to Login page</button
+					>
+				{/if}
 			</div>
 		</div>
 	</div>
