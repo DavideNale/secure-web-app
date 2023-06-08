@@ -48,7 +48,7 @@
 			.post('https://sdh-server.crabdance.com/api/login', { email, password })
 			.then((response) => {
 				switch (response.status) {
-					case 200:
+					case 201:
 						if (response.data.role == 'doctor') {
 							Cookies.set('auth', JSON.stringify(response.data), {
 								expires: 1 / 24,
@@ -58,7 +58,7 @@
 							sessionToken.set(response.data.token);
 							sessionValid.set(true);
 							goto('/');
-						} else if (response.data.role == 'patient') {
+						} else {
 							showOTP = true;
 						}
 						break;
@@ -70,14 +70,7 @@
 				}
 			})
 			.catch((error) => {
-				switch (error.response.status) {
-					case 404:
-						toast.error('No account associated with this email');
-						break;
-					default:
-						toast.error('Internal Server Error');
-						break;
-				}
+				toast.error('Internal Server Error');
 			});
 	}
 </script>

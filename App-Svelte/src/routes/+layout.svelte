@@ -8,34 +8,37 @@
 	import { redirect } from '@sveltejs/kit';
 	import { page } from '$app/stores';
 
-
 	let shouldLoad = false;
 
-	beforeUpdate(()=>{
+	beforeUpdate(() => {
 		shouldLoad = false;
-		//console.log($page.url.pathname)
-		if($page.url.pathname === '/login' || $page.url.pathname === '/register'){
-			shouldLoad = true
-			return
+		if ($page.url.pathname === '/login' || $page.url.pathname === '/register') {
+			shouldLoad = true;
+			return;
 		}
 		const authCookie = Cookies.get('auth');
 
 		if (authCookie === undefined) {
-			return goto('/login')
-		} else{
+			return goto('/login');
+		} else {
 			const cookieValue = Cookies.get('auth');
-			if (cookieValue !== undefined){
+			if (cookieValue !== undefined) {
 				const parsedCookie = JSON.parse(cookieValue);
-				console.log(parsedCookie);
 				sessionToken.set(parsedCookie.token);
 				sessionValid.set(true);
 				sessionRole.set(parsedCookie.role);
+				if ($page.url.pathname === '/personal' && parsedCookie.role === 'doctor') {
+					return goto('/login');
+				}
+				if ($page.url.pathname === '/' && parsedCookie.role === 'patient') {
+					return goto('/login');
+				}
 				shouldLoad = true;
 			}
 		}
 	});
-
 </script>
+
 {#if shouldLoad}
-<slot />
+	<slot />
 {/if}
